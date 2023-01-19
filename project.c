@@ -218,7 +218,7 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
                 fgets(matn , 100 ,file1);
                 fprintf(file2, "%s" , matn);
             }
-            for(int i=0;i<place;i++){
+            for(int i=0;i<place-1;i++){
                 v=fgetc(file1);
                 fputc(v,file2);
             }
@@ -247,7 +247,6 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
             while((fgets(matn , 100 , file1)) != NULL){
                 strcat(matnkol , matn);
             }
-            //printf("%s",matnkol);
             fclose(file1);
             file1 = fopen(direction , "w");
             mcounter=0;
@@ -265,6 +264,50 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
     }
     else
         printf("This file doesn't exist\n");
+}
+
+void tcopystr(char direction[] , int line , int place , int csize , char mode){
+    char matn[100] , v;
+    int tchar=0;
+    FILE* file2 = fopen("root/mine/clipboard.txt" , "w");
+    if(!check_fileex(direction)){
+        printf("This file doesn't exist\n");
+    }
+    else{
+        FILE* file1 = fopen(direction , "r");
+        if(mode == 'f'){
+            for (int i=0;i<line-2;i++){
+                fgets(matn , 100 , file1);
+            }
+            for(int i=0;i<place-1;i++){
+                fgetc(file1);
+            }
+            for(int i=0;i<csize;i++){
+                v=fgetc(file1);
+                fputc(v , file2);
+            }
+            fclose(file1);
+            fclose(file2);
+        }
+        if(mode == 'b'){
+            for(int i=0;i<line-1;i++){
+                fgets(matn , 100 , file1);
+                tchar+=strlen(matn);
+            }
+            tchar+=place;
+            fclose(file1);
+            file1 = fopen(direction , "r");
+            for(int i=0;i<tchar-csize;i++){
+                fgetc(file1);
+            }
+            for(int i=0; i< csize ; i++){
+                v=fgetc(file1);
+                fputc(v , file2);
+            }
+            fclose(file1);
+            fclose(file2);
+        }
+    }
 }
 
 int main(){
@@ -394,6 +437,67 @@ int main(){
             }
         }
 
+        else if(!strcmp(vo , "copystr")){
+            int line , place , csize;
+            char c;
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo , "--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                char direction[100];
+                int dcounter=1;
+                direction[0]=getchar();
+                if(direction[0] == '"'){
+                    while((direction[dcounter]=getchar()) != '"')
+                        dcounter++;
+                    for(int i=0;i<dcounter-1;i++){
+                        direction[i]=direction[i+1];
+                    }
+                    direction[dcounter-1]='\0';
+                    getchar();
+                }
+            else{
+                while((direction[dcounter]=getchar()) != 32)
+                    dcounter++;
+                direction[dcounter]='\0';
+            }
+            scanf("%s",vo);
+            if(strcmp(vo , "--pos")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                scanf("%d%c%d",&line,&c,&place);
+                getchar();
+                scanf("%s",vo);
+                if(strcmp(vo , "-size")){
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
+                }
+                else{
+                    getchar();
+                    scanf("%d",&csize);
+                    getchar();
+                    scanf("%s",vo);
+                    if(!strcmp(vo , "-b"))
+                        c='b';
+                    else if(!strcmp(vo , "-f"))
+                        c='f';
+                    else{
+                        fgets(vo,100,stdin);
+                        printf("Invalid Input\n");
+                    }
+                }
+                //printf("direction : %s line : %d place : %d size : %d mode : %c\n",direction,line,place,csize,c);
+                tcopystr(direction,line,place,csize,c);
+            }
+            }
+        }
         else{
             printf("Invalid Input\n");
             fgets(vo,100,stdin);
