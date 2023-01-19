@@ -8,7 +8,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-
 int check_direx(char name[]){
     DIR* dir = opendir(name);
     if(dir){
@@ -252,10 +251,3 @@ int main(){
     }
     return 0;
 }
-
-
-
-
-
-
-
