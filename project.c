@@ -310,6 +310,41 @@ void tcopystr(char direction[] , int line , int place , int csize , char mode){
     }
 }
 
+void tpastestr(char direction[] , int line , int place){
+    char cmatn[200] ,matn[100] ,v;
+    if(!check_fileex(direction))
+        printf("This file doesn't exist\n");
+    else{
+        FILE* file2 = fopen("root/mine/clipboard.txt" , "r");
+        fgets(cmatn , 200 ,file2);
+        printf("%s\n",cmatn);
+        fclose(file2);
+        FILE* file1 = fopen(direction , "r");
+        file2 = fopen("root/mine/helper.txt" , "w");
+        while((fgets(matn , 100 ,file1)) != NULL){
+            fputs(matn , file2);
+        }
+        fclose(file1);
+        fclose(file2);
+        file1 = fopen(direction , "w");
+        file2 = fopen("root/mine/helper.txt" , "r");
+        for(int i=0;i<line-1;i++){
+            fgets(matn , 100 , file2);
+            fprintf(file1 , "%s" , matn);
+        }
+        for(int i=0;i<place;i++){
+            v=fgetc(file2);
+            fputc(v , file1);
+        }
+        fprintf(file1 , "%s" , cmatn);
+        while((fgets(matn , 100 ,file2)) != NULL){
+            fprintf(file1 , "%s" ,matn);
+        }
+        fclose(file1);
+        fclose(file2);
+    }
+}
+
 int main(){
     char vo[100] , c;
     while(1){
@@ -555,6 +590,46 @@ int main(){
                 }
                 tcopystr(direction,line,place,csize,c);
                 tremovetstr(direction,line,place,csize,c);
+            }
+            }
+        }
+        else if(!strcmp(vo , "pastestr")){
+            int line , place , csize;
+            char c;
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo , "--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                char direction[100];
+                int dcounter=1;
+                direction[0]=getchar();
+                if(direction[0] == '"'){
+                    while((direction[dcounter]=getchar()) != '"')
+                        dcounter++;
+                    for(int i=0;i<dcounter-1;i++){
+                        direction[i]=direction[i+1];
+                    }
+                    direction[dcounter-1]='\0';
+                    getchar();
+                }
+            else{
+                while((direction[dcounter]=getchar()) != 32)
+                    dcounter++;
+                direction[dcounter]='\0';
+            }
+            scanf("%s",vo);
+            if(strcmp(vo , "--pos")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                scanf("%d%c%d",&line,&c,&place);
+                tpastestr(direction,line,place);
             }
             }
         }
