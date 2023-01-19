@@ -493,8 +493,68 @@ int main(){
                         printf("Invalid Input\n");
                     }
                 }
-                //printf("direction : %s line : %d place : %d size : %d mode : %c\n",direction,line,place,csize,c);
                 tcopystr(direction,line,place,csize,c);
+            }
+            }
+        }
+        else if(!strcmp(vo , "cutstr")){
+            int line , place , csize;
+            char c;
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo , "--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                char direction[100];
+                int dcounter=1;
+                direction[0]=getchar();
+                if(direction[0] == '"'){
+                    while((direction[dcounter]=getchar()) != '"')
+                        dcounter++;
+                    for(int i=0;i<dcounter-1;i++){
+                        direction[i]=direction[i+1];
+                    }
+                    direction[dcounter-1]='\0';
+                    getchar();
+                }
+            else{
+                while((direction[dcounter]=getchar()) != 32)
+                    dcounter++;
+                direction[dcounter]='\0';
+            }
+            scanf("%s",vo);
+            if(strcmp(vo , "--pos")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                scanf("%d%c%d",&line,&c,&place);
+                getchar();
+                scanf("%s",vo);
+                if(strcmp(vo , "-size")){
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
+                }
+                else{
+                    getchar();
+                    scanf("%d",&csize);
+                    getchar();
+                    scanf("%s",vo);
+                    if(!strcmp(vo , "-b"))
+                        c='b';
+                    else if(!strcmp(vo , "-f"))
+                        c='f';
+                    else{
+                        fgets(vo,100,stdin);
+                        printf("Invalid Input\n");
+                    }
+                }
+                tcopystr(direction,line,place,csize,c);
+                tremovetstr(direction,line,place,csize,c);
             }
             }
         }
