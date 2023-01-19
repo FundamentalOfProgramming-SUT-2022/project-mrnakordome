@@ -207,6 +207,65 @@ void tinsert(char name[]){
     fclose(file1);
 }
 
+void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
+    char matn[100] ,matnkol[10000] ,v;
+    int tchar=0 , mcounter=0;
+    if(check_fileex(direction)){
+        FILE* file1 = fopen(direction , "r");
+        FILE* file2 = fopen("root/mine/helper.txt" , "w");
+        if(dmode == 'f'){
+            for(int i=0;i<line-1;i++){
+                fgets(matn , 100 ,file1);
+                fprintf(file2, "%s" , matn);
+            }
+            for(int i=0;i<place;i++){
+                v=fgetc(file1);
+                fputc(v,file2);
+            }
+            for(int i=0;i<dsize;i++)
+                v=fgetc(file1);
+            while((fgets(matn , 100 , file1)) != NULL)
+                fprintf(file2 , "%s" ,matn);
+            fclose(file1);
+            fclose(file2);
+            file1 = fopen(direction , "w");
+            file2 = fopen("root/mine/helper.txt" , "r");
+            while((fgets(matn , 100 , file2)) != NULL)
+                fprintf(file1 , "%s" ,matn);
+            fclose(file1);
+            fclose(file2);
+        }
+        else{
+            FILE* file1 = fopen(direction , "r");
+            for(int i=0;i<line-1;i++){
+                fgets(matn , 100 ,file1);
+                tchar+=strlen(matn);
+            }
+            tchar+=place;
+            fclose(file1);
+            file1 = fopen(direction , "r");
+            while((fgets(matn , 100 , file1)) != NULL){
+                strcat(matnkol , matn);
+            }
+            //printf("%s",matnkol);
+            fclose(file1);
+            file1 = fopen(direction , "w");
+            mcounter=0;
+            for(int i=0;i<tchar-dsize;i++){
+                fputc(matnkol[mcounter] , file1);
+                mcounter++;
+            }
+            mcounter=tchar;
+            while(matnkol[mcounter] != '\0'){
+                fputc(matnkol[mcounter] , file1);
+                mcounter++;
+            }
+            fclose(file1);
+        }
+    }
+    else
+        printf("This file doesn't exist\n");
+}
 
 int main(){
     char vo[100] , c;
@@ -244,6 +303,97 @@ int main(){
                 tinsert(vo);
             }
         }
+
+        else if(!strcmp(vo , "removetstr")){
+            int line , place , dsize;
+            char c;
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo,"--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                char direction[100];
+                int dcounter=1;
+                direction[0]=getchar();
+                if(direction[0] == '"'){
+                    while((direction[dcounter]=getchar()) != '"')
+                        dcounter++;
+                    for(int i=0;i<dcounter-1;i++){
+                        direction[i]=direction[i+1];
+                    }
+                    direction[dcounter-1]='\0';
+                    getchar();
+                    scanf("%s",vo);
+                    if(!strcmp(vo , "--pos")){
+                        getchar();
+                        scanf("%d%c%d",&line,&c,&place);
+                        getchar();
+                        scanf("%s",vo);
+                        if(strcmp(vo , "-size")){
+                            fgets(vo,100,stdin);
+                            printf("Invalid Input\n");
+                        }
+                        else{
+                            getchar();
+                            scanf("%d",&dsize);
+                            getchar();
+                            scanf("%s",vo);
+                            if(!strcmp(vo , "-b"))
+                                c='b';
+                            else if(!strcmp(vo , "-f"))
+                                c='f';
+                            else{
+                                fgets(vo,100,stdin);
+                                printf("Invalid Input\n");
+                            }
+                        }
+                    }
+                    else{
+                        fgets(vo,100,stdin);
+                        printf("Invalid Input\n");
+                    }
+                }
+                else{
+                    while((direction[dcounter]=getchar()) != 32)
+                        dcounter++;
+                    direction[dcounter]='\0';
+                    scanf("%s",vo);
+                    if(!strcmp(vo , "--pos")){
+                        getchar();
+                        scanf("%d%c%d",&line,&c,&place);
+                        getchar();
+                        scanf("%s",vo);
+                        if(strcmp(vo , "-size")){
+                            fgets(vo,100,stdin);
+                            printf("Invalid Input\n");
+                        }
+                        else{
+                            getchar();
+                            scanf("%d",&dsize);
+                            getchar();
+                            scanf("%s",vo);
+                            if(!strcmp(vo , "-b"))
+                                c='b';
+                            else if(!strcmp(vo , "-f"))
+                                c='f';
+                            else{
+                                fgets(vo,100,stdin);
+                                printf("Invalid Input\n");
+                            }
+                        }
+                    }
+                    else{
+                        fgets(vo,100,stdin);
+                        printf("Invalid Input\n");
+                    }
+                }
+                tremovetstr(direction,line,place,dsize,c);
+            }
+        }
+
         else{
             printf("Invalid Input\n");
             fgets(vo,100,stdin);
