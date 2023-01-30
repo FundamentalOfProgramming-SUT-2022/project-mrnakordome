@@ -446,6 +446,87 @@ void tfind(char direction[] , char kalame[] , int modde , int atr){
     printf("Your word didn't exist\n");
 }
 
+void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int atr){
+    if(!check_fileex(direction)){
+        printf("This file doesn't exist\n");
+        return;
+    }
+    char fmatn[20000] , matn[100] , buff[100] , c;
+    basekon(fmatn);
+    int t=0 ,i=0 ,tedad=0,founded[100] ,n;
+    buff[strlen(kalame)] = '\0';
+    FILE* file1 = fopen(direction , "r");
+
+    while((fgets(matn , 100 , file1)) != NULL)
+        strcat(fmatn , matn);
+    fclose(file1);
+
+    for(int i=0 ; i<=strlen(fmatn) - strlen(kalame) ; i++){
+        for(int j=0 ; j<strlen(kalame) ; j++){
+            buff[j] = fmatn[i+j];
+        }
+        if(!strcmp(kalame , buff) &&(i==0 || (fmatn[i-1] == 32 || fmatn[i-1] == '\n')) && (fmatn[i+strlen(kalame)] == 32 || fmatn[i+strlen(kalame)] == '\n' || (i+strlen(kalame) == strlen(fmatn)))){
+            founded[tedad]=i;
+            tedad++;
+        }
+    }
+    if(tedad == 0){
+        printf("Your word wasn't in the file!\n");
+        return;
+    }
+    file1 = fopen(direction , "r");
+    FILE* file2 = fopen("root/mine/helper.txt" , "w");
+    if(modde == 0 || modde == 1){
+            if(modde == 1)
+                n=founded[atr-1];
+            else
+                n=founded[0];
+        for(int i=0;i<n;i++){
+            c = fgetc(file1);
+            fputc(c , file2);
+        }
+        fputs(matn2 , file2);
+        for(int i=0;i<strlen(kalame);i++)
+            fgetc(file1);
+        while((fgets(matn , 100 , file1)) != NULL)
+            fputs(matn , file2);
+        fclose(file1);
+        fclose(file2);
+        file1 = fopen(direction , "w");
+        file2 = fopen("root/mine/helper.txt" , "r");
+        while((fgets(matn , 100 , file2)) != NULL)
+            fputs(matn , file1);
+        fclose(file1);
+        fclose(file2);
+        return;
+    }
+    int nowcheck=0;
+    if(modde == 2){
+        basekon(fmatn);
+        while((fgets(matn , 100 , file1)) != NULL)
+            strcat(fmatn , matn);
+        for(int i=0;i<strlen(fmatn);i++){
+            if(i != founded[nowcheck]){
+                fputc(fmatn[i] , file2);
+            }
+            else{
+                fputs(matn2 , file2);
+                i=i+strlen(kalame)-1;
+                nowcheck++;
+            }
+        }
+        fclose(file1);
+        fclose(file2);
+        file1 = fopen(direction , "w");
+        file2 = fopen("root/mine/helper.txt" , "r");
+        while((fgets(matn , 100 , file2)) != NULL)
+            fputs(matn , file1);
+        fclose(file1);
+        fclose(file2);
+        return;
+    }
+}
+
 int main(){
     char vo[100] , c;
     while(1){
@@ -820,7 +901,101 @@ int main(){
                     }
                     rootdo(vo);
                     tfind(vo , matn , m , atr);
-                    //printf("direction:%s\nkalame:%s\nmode:%d\n",vo,matn,m);
+                }
+            }
+        }
+
+        else if(!strcmp(vo , "replace")){
+            char c , matn1[200] , matn2[200];
+            int i=0 ,cv=0,m=0,atr=0;
+            getchar();
+            scanf("%s" , vo);
+            if(!strcmp(vo , "-at")){
+                m=1;
+                scanf("%d",&atr);
+            }
+
+            else if(!strcmp(vo , "-all")){
+                m=2;
+            }
+
+            else if(strcmp(vo , "--str1")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+                cv++;
+            }
+
+            if(m!=0){
+                getchar();
+                scanf("%s",vo);
+                if(strcmp(vo , "--str1")){
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
+                    cv++;
+                }
+            }
+            if(cv==0){
+                getchar();
+                matn1[i]=getchar();
+                i++;
+                if(matn1[i-1] == '"'){
+                    i--;
+                    matn1[i]=getchar();
+                    i++;
+                    while((matn1[i]=getchar()) != '"')
+                        i++;
+                    matn1[i]='\0';
+                    getchar();
+                }
+                else{
+                    while((matn1[i]=getchar()) != 32)
+                        i++;
+                    matn1[i]='\0';
+                }
+                scanf("%s",vo);
+                if(strcmp(vo , "--str2")){
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
+                }
+                else{
+                    i=0;
+                    getchar();
+                    matn2[i]=getchar();
+                    i++;
+                    if(matn2[i-1] == '"'){
+                        i--;
+                        matn2[i]=getchar();
+                        i++;
+                        while((matn2[i]=getchar()) != '"')
+                            i++;
+                        matn2[i]='\0';
+                        getchar();
+                    }
+                    else{
+                        while((matn2[i]=getchar()) != 32)
+                            i++;
+                        matn2[i]='\0';
+                    }
+                    scanf("%s" , vo);
+                    if(strcmp(vo , "--file")){
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
+                    }
+                    else{
+                        getchar();
+                        fgets(vo , 100 ,stdin);
+                        vo[strlen(vo)-1]='\0';
+                        if(vo[0] == '"'){
+                            int n = strlen(vo);
+                            n-=2;
+                            for(int i=0;i<n;i++)
+                            vo[i]=vo[i+1];
+                            vo[n] = '\0';
+                        }
+                        rootdo(vo);
+                        treplace(vo , matn1 , matn2 , m , atr);
+                        //printf("matn1:%s\nmatn2:%s\ndirection:%s\nmode%d\n",matn1 , matn2 ,vo,m);
+                    }
                 }
             }
         }
