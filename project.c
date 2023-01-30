@@ -8,6 +8,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+void basekon(char matn[]){
+    for(int i=0;i<strlen(matn);i++){
+        matn[i]='\0';
+    }
+}
+
 int check_direx(char name[]){
     DIR* dir = opendir(name);
     if(dir){
@@ -28,6 +34,13 @@ int check_fileex(char name[]){
         return 0;
 }
 
+void rootdo (char direction[]){
+    int n=strlen(direction);
+    for(int i=0;i<=n;i++){
+        direction[i]=direction[i+1];
+    }
+}
+
 void tcreatefile(char name[]){
     int n = strlen(name);
     if(name[0] == '"'){
@@ -36,6 +49,7 @@ void tcreatefile(char name[]){
             name[i]=name[i+1];
         name[n] = '\0';
     }
+    rootdo(name);
     char direction[100] ;
     for(int i=0;i<n;i++){
         if(name[i] != '/'){
@@ -98,6 +112,7 @@ void tinsert(char name[]){
         return;
     }
     checker[6]='\0';
+    rootdo(direction);
     if(!check_fileex(direction)){
         printf("This file doesn't exist\n");
         return;
@@ -208,6 +223,7 @@ void tinsert(char name[]){
 }
 
 void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
+    rootdo(direction);
     char matn[100] ,matnkol[10000] ,v;
     int tchar=0 , mcounter=0;
     if(check_fileex(direction)){
@@ -267,6 +283,7 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
 }
 
 void tcopystr(char direction[] , int line , int place , int csize , char mode){
+    rootdo(direction);
     char matn[100] , v;
     int tchar=0;
     FILE* file2 = fopen("root/mine/clipboard.txt" , "w");
@@ -311,13 +328,14 @@ void tcopystr(char direction[] , int line , int place , int csize , char mode){
 }
 
 void tpastestr(char direction[] , int line , int place){
+    rootdo(direction);
     char cmatn[200] ,matn[100] ,v;
     if(!check_fileex(direction))
         printf("This file doesn't exist\n");
     else{
         FILE* file2 = fopen("root/mine/clipboard.txt" , "r");
         fgets(cmatn , 200 ,file2);
-        printf("%s\n",cmatn);
+        //printf("%s\n",cmatn);
         fclose(file2);
         FILE* file1 = fopen(direction , "r");
         file2 = fopen("root/mine/helper.txt" , "w");
@@ -343,6 +361,89 @@ void tpastestr(char direction[] , int line , int place){
         fclose(file1);
         fclose(file2);
     }
+}
+
+void tfind(char direction[] , char kalame[] , int modde , int atr){
+    if(!check_fileex(direction)){
+        printf("This file doesn't exist\n");
+        return;
+    }
+    char fmatn[20000] , matn[100] , buff[100] , c;
+    basekon(fmatn);
+    int t=0 ,i=0 ,tedad=0,founded[100];
+    buff[strlen(kalame)] = '\0';
+    FILE* file1 = fopen(direction , "r");
+
+    while((fgets(matn , 100 , file1)) != NULL)
+        strcat(fmatn , matn);
+    fclose(file1);
+
+    for(int i=0 ; i<=strlen(fmatn) - strlen(kalame) ; i++){
+        for(int j=0 ; j<strlen(kalame) ; j++){
+            buff[j] = fmatn[i+j];
+        }
+        if(!strcmp(kalame , buff) &&(i==0 || (fmatn[i-1] == 32 || fmatn[i-1] == '\n')) && (fmatn[i+strlen(kalame)] == 32 || fmatn[i+strlen(kalame)] == '\n' || (i+strlen(kalame) == strlen(fmatn)))){
+            founded[tedad]=i;
+            tedad++;
+        }
+    }
+    if(modde == 1){
+        printf("%d\n",tedad);
+        return;
+    }
+
+    if(modde == 0){
+        printf("%d\n",founded[0]+1);
+        return;
+    }
+
+    if(modde==3){
+        for(int k=0 ; k<i ; k++){
+            if(fmatn[k] == 32)
+                t++;
+        }
+        printf("%d\n" , t+1);
+            return;
+    }
+
+    if(modde == 2){
+        if(tedad < atr){
+            printf("Couldn't find that many!\n");
+            return;
+        }
+        printf("%d\n",founded[atr-1]+1);
+        return;
+    }
+
+    if(modde == 4){
+        printf("%d",founded[0]+1);
+        for(int j=1;j<tedad;j++){
+            printf(",%d",founded[j]+1);
+        }
+        printf("\n");
+        return;
+    }
+
+    if(modde == 5){
+        t=0;
+        for(int k=0 ; k<founded[0] ; k++){
+            if(fmatn[k] == 32)
+                t++;
+        }
+        printf("%d",t+1);
+        for(int j=1 ; j<tedad;j++){
+            t=0;
+            for(int k=0 ; k<founded[j] ; k++){
+            if(fmatn[k] == 32)
+                t++;
+            }
+            printf(",%d",t+1);
+        }
+        printf("\n");
+        return;
+    }
+
+    printf("Your word didn't exist\n");
 }
 
 int main(){
@@ -633,10 +734,102 @@ int main(){
             }
             }
         }
+
+        else if(!strcmp(vo , "find")){
+            char c , matn[200];
+            int i=0 ,cv=0,m=0,atr=0;
+            getchar();
+            scanf("%s" , vo);
+            if(!strcmp(vo , "-count")){
+                m=1;
+            }
+
+            else if(!strcmp(vo , "-at")){
+                m=2;
+                scanf("%d" , &atr);
+            }
+
+            else if(!strcmp(vo , "-byword")){
+                m=3;
+            }
+
+            else if(!strcmp(vo , "-all")){
+                getchar();
+                scanf("%s" , vo);
+                if(!strcmp(vo , "-byword")){
+                    m=5;
+                }
+                else if(!strcmp(vo , "--str")){
+                    m=4;
+                }
+                else{
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
+                    cv++;
+                }
+            }
+
+            else if(strcmp(vo , "--str")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+                cv++;
+            }
+
+            if(m!=0 && m!=4){
+                getchar();
+                scanf("%s",vo);
+                if(strcmp(vo , "--str")){
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
+                    cv++;
+                }
+            }
+            if(cv==0){
+                getchar();
+                matn[i]=getchar();
+                i++;
+                if(matn[i-1] == '"'){
+                    i--;
+                    matn[i]=getchar();
+                    i++;
+                    while((matn[i]=getchar()) != '"')
+                        i++;
+                    matn[i]='\0';
+                    getchar();
+                }
+                else{
+                    while((matn[i]=getchar()) != 32)
+                        i++;
+                    matn[i]='\0';
+                }
+                scanf("%s" , vo);
+                if(strcmp(vo , "--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+                }
+                else{
+                    getchar();
+                    fgets(vo , 100 ,stdin);
+                    vo[strlen(vo)-1]='\0';
+                    if(vo[0] == '"'){
+                        int n = strlen(vo);
+                        n-=2;
+                        for(int i=0;i<n;i++)
+                        vo[i]=vo[i+1];
+                        vo[n] = '\0';
+                    }
+                    rootdo(vo);
+                    tfind(vo , matn , m , atr);
+                    //printf("direction:%s\nkalame:%s\nmode:%d\n",vo,matn,m);
+                }
+            }
+        }
+
         else{
             printf("Invalid Input\n");
             fgets(vo,100,stdin);
         }
+
     }
     return 0;
 }
