@@ -164,6 +164,9 @@ void tinsert(char name[]){
     }
     ja/=10;
     khat/=10;
+    FILE* file3 = fopen("root/mine/changes.txt" , "a");
+    fprintf(file3 , "starthere\n%s\ninsertstr\n%d %d %d\n" , direction,strlen(matn),khat,ja);
+    fclose(file3);
     FILE* file1 = fopen(direction , "r");
     FILE* file2 = fopen("root/mine/helper.txt" , "w");
     char vorodi[100];
@@ -229,6 +232,8 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
     if(check_fileex(direction)){
         FILE* file1 = fopen(direction , "r");
         FILE* file2 = fopen("root/mine/helper.txt" , "w");
+        FILE* file3 = fopen("root/mine/changes.txt" , "a");
+        fprintf(file3 , "starthere\nremovetstr\n%s\n%c %d %d\n",direction,dmode,line,place);
         if(dmode == 'f'){
             for(int i=0;i<line-1;i++){
                 fgets(matn , 100 ,file1);
@@ -238,8 +243,10 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
                 v=fgetc(file1);
                 fputc(v,file2);
             }
-            for(int i=0;i<dsize;i++)
+            for(int i=0;i<dsize;i++){
                 v=fgetc(file1);
+                fputc(v , file3);
+            }
             while((fgets(matn , 100 , file1)) != NULL)
                 fprintf(file2 , "%s" ,matn);
             fclose(file1);
@@ -270,13 +277,18 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
                 fputc(matnkol[mcounter] , file1);
                 mcounter++;
             }
-            mcounter=tchar;
+            while(mcounter != tchar){
+                fprintf(file3 , "%c" , matnkol[mcounter]);
+                mcounter++;
+            }
             while(matnkol[mcounter] != '\0'){
                 fputc(matnkol[mcounter] , file1);
                 mcounter++;
             }
             fclose(file1);
         }
+        fprintf(file3 , "\n");
+        fclose(file3);
     }
     else
         printf("This file doesn't exist\n");
@@ -336,6 +348,9 @@ void tpastestr(char direction[] , int line , int place){
         FILE* file2 = fopen("root/mine/clipboard.txt" , "r");
         fgets(cmatn , 200 ,file2);
         fclose(file2);
+        FILE* file3 = fopen("root/mine/changes.txt" , "a");
+        fprintf(file3 , "starthere\npastestr\n%s\n%d %d\n%s\n",direction,line,place,cmatn);
+        fclose(file3);
         FILE* file1 = fopen(direction , "r");
         file2 = fopen("root/mine/helper.txt" , "w");
         while((fgets(matn , 100 ,file1)) != NULL){
@@ -450,6 +465,9 @@ void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int 
         printf("This file doesn't exist\n");
         return;
     }
+    FILE* file3 = fopen("root/mine/changes.txt" , "a");
+    fprintf(file3 , "starthere\nreplace\n%s\n%s\n%s\n%d %d\n", direction,kalame,matn2,modde,atr);
+    fclose(file3);
     char fmatn[20000] , matn[100] , buff[100] , c;
     basekon(fmatn);
     int t=0 ,i=0 ,tedad=0,founded[100] ,n;
@@ -656,6 +674,25 @@ void tgrep(char direction[] , char kalame[] , int modde){
         printf("%d\n",ted);
     }
 }
+
+/*void tundo(char direction()){
+    char matn[200] , str1[200] ;
+    int line=0,pos=0,dsize=0,check=0,modde=10;
+    FILE* file1 = fopen("root/mine/changes.txt" , "r");
+    while((fgets(matn , 200 , file1)) != NULL){
+        int n=strlen(matn);
+        if(matn[n-1] == '\n')
+            matn[n-1]='\0';
+        if(!strcmp(direction , matn)){
+            fgets(matn , 200 , file1);
+            n=strlen(matn);
+            matn[n-1]='\0';
+            if(!strcmp(matn , "insertstr")){
+
+            }
+        }
+    }
+}*/
 
 int main(){
     char vo[100] , c;
@@ -1177,8 +1214,8 @@ int main(){
                 }
                 scanf("%s" , vo);
                 if(strcmp(vo , "--files")){
-                fgets(vo,100,stdin);
-                printf("Invalid Input\n");
+                    fgets(vo,100,stdin);
+                    printf("Invalid Input\n");
                 }
                 else{
                     getchar();
@@ -1188,13 +1225,37 @@ int main(){
                         int n = strlen(vo);
                         n-=2;
                         for(int i=0;i<n;i++)
-                        vo[i]=vo[i+1];
+                            vo[i]=vo[i+1];
                         vo[n] = '\0';
                     }
                     tgrep(vo , matn ,m);
                 }
             }
         }
+
+        /*else if(!strcmp(vo , "undo")){
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo , "--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                fgets(vo , 100 ,stdin);
+                vo[strlen(vo)-1]='\0';
+                if(vo[0] == '"'){
+                    int n = strlen(vo);
+                    n-=2;
+                    for(int i=0;i<n;i++)
+                        vo[i]=vo[i+1];
+                    vo[n] = '\0';
+                }
+            }
+            printf("%s\n",vo);
+            rootdo(vo);
+            //tundo
+        }*/
 
         else{
             printf("Invalid Input\n");
