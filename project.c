@@ -753,6 +753,72 @@ void tundo(char direction[]){
     return;
 }
 
+tcpairs(char direction[]){
+    if(!check_fileex(direction)){
+        printf("This file doesn't exist!\n");
+        return;
+    }
+    FILE* file1 = fopen(direction , "r");
+    FILE* file2 = fopen("root/mine/helper.txt" , "w");
+    char c , perv='a';
+    int tab=0;
+    char matn[2000];
+    fgets(matn , 2000 , file1);
+    int n=strlen(matn);
+    for(int k=0;k<n;k++){
+    c=matn[k];
+        if(perv == '}' && c != '}'){
+            fputc('\n',file2);
+        }
+        if(c != '{' && c != '}'){
+            fputc(c,file2);
+            perv=c;
+        }
+        else if(c == '{'){
+            if(perv == 32 || k == 0){
+                fputc(c,file2);
+                perv=c;
+            }
+            if(perv != 32 && k != 0){
+                fputc(' ' , file2);
+                fputc(c,file2);
+                perv=c;
+            }
+            tab+=4;
+            fputc('\n',file2);
+            for(int i=0;i<tab;i++){
+                fputc(' ' , file2);
+            }
+            k++;
+            while((matn[k] == 32)){
+                k++;
+            }
+            c=matn[k];
+            fputc(c,file2);
+            perv=c;
+        }
+        else if(c == '}'){
+            fputc('\n',file2);
+            tab-=4;
+            for(int i=0;i<tab;i++){
+                fputc(' ' ,file2);
+            }
+            fputc(c,file2);
+            perv=c;
+        }
+    }
+    fclose(file1);
+    fclose(file2);
+    file1 = fopen(direction , "w");
+    file2 = fopen("root/mine/helper.txt" , "r");
+    while((fgets(matn , 2000 , file2)) != NULL){
+        fputs(matn , file1);
+    }
+    fclose(file1);
+    fclose(file2);
+    return;
+}
+
 int main(){
     char vo[100] , c;
     while(1){
@@ -1312,8 +1378,30 @@ int main(){
                 }
             }
             rootdo(vo);
-            //printf("%s\n",vo);
             tundo(vo);
+        }
+
+        else if(!strcmp(vo , "auto-indent")){
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo , "--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                fgets(vo , 100 ,stdin);
+                vo[strlen(vo)-1]='\0';
+                if(vo[0] == '"'){
+                    int n = strlen(vo);
+                    n-=2;
+                    for(int i=0;i<n;i++)
+                        vo[i]=vo[i+1];
+                    vo[n] = '\0';
+                }
+            }
+            rootdo(vo);
+            tcpairs(vo);
         }
 
         else{
