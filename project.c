@@ -936,6 +936,42 @@ void tcompare(char direction[]){
     }
 }
 
+void ttree(char* direction ,int cdepth , int depth ,int dcounter){
+    int i;
+    char matn[1000];
+    if(!strcmp(direction , "root/mine")){
+        return;
+    }
+    DIR* dir1 = opendir(direction);
+    if(!dir1 || depth == 0){
+        return;
+    }
+    struct dirent* entity;
+    while((entity=readdir(dir1)) != NULL){
+        if(strcmp(entity->d_name , ".") && strcmp(entity->d_name , "..")){
+            for(i=0;i<cdepth;i++){
+                if(!strcmp(entity->d_name , "mine"));
+                else if(i%2 == 0 || i == 0){
+                    printf("%c",'|');
+                }
+                else{
+                    printf(" ");
+                }
+            }
+            if(strcmp(entity->d_name , "mine")){
+                printf("|--%s\n",entity->d_name);
+                strcpy(matn , direction);
+                strcat(matn , "/");
+                strcat(matn , entity->d_name);
+                if(dcounter < depth){
+                    ttree(matn, cdepth+2,depth,dcounter+1);
+                }
+            }
+        }
+    }
+    closedir(dir1);
+}
+
 int main(){
     char vo[100] , c;
     while(1){
@@ -1558,7 +1594,21 @@ int main(){
                     vo[n] = '\0';
                 }
                 tcompare(vo);
-                ///////////////////
+            }
+        }
+
+        else if(!strcmp(vo , "tree")){
+            getchar();
+            int d=0;
+            scanf("%d",&d);
+            if(d < -1){
+                printf("Invalid depth!\n");
+            }
+            else if(d == -1){
+                ttree("root" , 0 ,100 ,0);
+            }
+            else{
+                ttree("root" , 0 ,d,0);
             }
         }
 
@@ -1566,7 +1616,6 @@ int main(){
             printf("Invalid Input\n");
             fgets(vo,100,stdin);
         }
-
     }
     return 0;
 }
