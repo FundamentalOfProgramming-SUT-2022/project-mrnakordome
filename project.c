@@ -252,6 +252,21 @@ void tinsert(char name[]){
     fclose(file1);
 }
 
+void tcat(char direction[]){
+    if(!check_fileex(direction)){
+        printf("This file doesn't exist!\n");
+        return;
+    }
+    else{
+        FILE* file1 = fopen(direction , "r");
+        char matn[200];
+        while((fgets(matn , 200 , file1)) != NULL){
+            printf("%s",matn);
+        }
+        printf("\n");
+    }
+}
+
 void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
     rootdo(direction);
     char matn[100] ,matnkol[10000] ,v;
@@ -758,7 +773,18 @@ tcpairs(char direction[]){
         printf("This file doesn't exist!\n");
         return;
     }
+
+    char fana[100] , fanammatn[200];
+    strcpy(fana , direction);
+    filenamemaker(fana);
     FILE* file1 = fopen(direction , "r");
+    FILE* file3 = fopen(fana , "w");
+    while((fgets(fanammatn , 200 , file1)) != NULL)
+        fputs(fanammatn , file3);
+    fclose(file1);
+    fclose(file3);
+
+    file1 = fopen(direction , "r");
     FILE* file2 = fopen("root/mine/helper.txt" , "w");
     char c , perv='a';
     int tab=0;
@@ -775,26 +801,36 @@ tcpairs(char direction[]){
             perv=c;
         }
         else if(c == '{'){
-            if(perv == 32 || k == 0){
-                fputc(c,file2);
-                perv=c;
-            }
-            if(perv != 32 && k != 0){
-                fputc(' ' , file2);
-                fputc(c,file2);
-                perv=c;
-            }
-            tab+=4;
-            fputc('\n',file2);
-            for(int i=0;i<tab;i++){
-                fputc(' ' , file2);
-            }
-            k++;
-            while((matn[k] == 32)){
+            while(c == '{'){
+                if(perv == 32 || k == 0){
+                    fputc(c,file2);
+                    perv=c;
+                }
+                else if(perv != 32 && k != 0){
+                    if(perv != '{')
+                        fputc(' ' , file2);
+                    fputc(c,file2);
+                    perv=c;
+                }
+                tab+=4;
+                fputc('\n',file2);
+                if(matn[k+1] == '}'){
+                    tab=tab-4;
+                }
+                for(int i=0;i<tab;i++){
+                    fputc(' ' , file2);
+                }
+                if(matn[k+1] == '}')
+                    tab+=4;
                 k++;
+                while((matn[k] == 32)){
+                    k++;
+                }
+                c=matn[k];
             }
-            c=matn[k];
             fputc(c,file2);
+            if(c == '}')
+                tab-=4;
             perv=c;
         }
         else if(c == '}'){
@@ -853,6 +889,24 @@ int main(){
                     vo[i]=vo[i+1];
                 vo[strlen(vo)-1] = '\0';
                 tinsert(vo);
+            }
+        }
+
+        else if(!strcmp(vo , "cat")){
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo , "--file")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                fgets(vo,100,stdin);
+                vo[strlen(vo)-1] = '\0';
+                for(int i=0;i<strlen(vo)-1;i++)
+                    vo[i]=vo[i+1];
+                vo[strlen(vo)-1] = '\0';
+                rootdo(vo);
+                tcat(vo);
             }
         }
 
@@ -1399,9 +1453,9 @@ int main(){
                         vo[i]=vo[i+1];
                     vo[n] = '\0';
                 }
+                rootdo(vo);
+                tcpairs(vo);
             }
-            rootdo(vo);
-            tcpairs(vo);
         }
 
         else{
