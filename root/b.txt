@@ -1,5 +1,3 @@
-int main() {
-    if(mmd == mmd) {
-        printf(ok);
-    }
-}
+salam.
+khubam.
+che khabar?

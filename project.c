@@ -855,6 +855,87 @@ tcpairs(char direction[]){
     return;
 }
 
+void tcompare(char direction[]){
+    char cdir1[100] , cdir2[100];
+    int s=0 ,cd=0 ,chap=0 , ted=0;
+    char buff[100];
+    int t=0 ,k=0,founded[100] ;
+    buff[6] = '\0';
+    for(int i=0 ; i<=strlen(direction) - 6 ; i++){
+        for(int j=0 ; j<6 ; j++){
+            buff[j] = direction[i+j];
+        }
+        if(!strcmp("/root/" , buff)){
+            founded[k]=i;
+            k++;
+        }
+    }
+    cd=0;
+    for(int i=0;i<founded[1]-1;i++){
+        cdir1[cd]=direction[i];
+        cd++;
+    }
+    cdir1[cd]='\0';
+    rootdo(cdir1);
+    cd=0;
+    for(int i=founded[1];i<strlen(direction);i++){
+        cdir2[cd]=direction[i];
+        cd++;
+    }
+    cdir2[cd]='\0';
+    rootdo(cdir2);
+    if(!check_fileex(cdir1)){
+        printf("This file(/%s)doesn't exist!\n",cdir1);
+        return;
+    }
+    if(!check_fileex(cdir2)){
+        printf("This file(/%s)doesn't exist!\n",cdir2);
+        return;
+    }
+    char matn1[2000] , matn2[2000];
+    int line1=0 ,line2=0 , line=0;
+    FILE* file1 = fopen(cdir1 , "r");
+    while((fgets(matn1 , 2000 , file1)) != NULL)
+        line1++;
+    fclose(file1);
+    FILE* file2 = fopen(cdir2 , "r");
+    while((fgets(matn2 , 2000 , file2)) != NULL)
+        line2++;
+    fclose(file2);
+    int min=line2 ,minf=1, max=line1;
+    if(line1 <= line2){
+        min=line1;
+        minf=2;
+        max=line2;
+    }
+    file1 = fopen(cdir1 , "r");
+    file2 = fopen(cdir2 , "r");
+    for(int i=0;i<min;i++){
+        fgets(matn1 , 2000 , file1);
+        fgets(matn2 , 2000 , file2);
+        if(matn1[strlen(matn1)-1] == '\n')
+            matn1[strlen(matn1)-1] = '\0';
+        if(matn2[strlen(matn2)-1] == '\n')
+            matn2[strlen(matn2)-1] = '\0';
+        if(strcmp(matn1 , matn2)){
+            printf("========== #%d ==========\n%s\n%s\n",i+1,matn1,matn2);
+        }
+    }
+    char matn[2000];
+    printf(">>>>>>>>>> #%d - #%d file%d >>>>>>>>>>\n",min+1,max,minf);
+    for(int i=0;i<max-min;i++){
+        if(minf == 2){
+            fgets(matn , 2000 , file2);
+        }
+        else{
+            fgets(matn , 2000 , file1);
+        }
+        if(matn[strlen(matn)-1] == '\n')
+            matn[strlen(matn)-1] = '\0';
+        printf("%s\n",matn);
+    }
+}
+
 int main(){
     char vo[100] , c;
     while(1){
@@ -1455,6 +1536,29 @@ int main(){
                 }
                 rootdo(vo);
                 tcpairs(vo);
+            }
+        }
+
+        else if(!strcmp(vo , "compare")){
+            getchar();
+            scanf("%s",vo);
+            if(strcmp(vo , "--files")){
+                fgets(vo,100,stdin);
+                printf("Invalid Input\n");
+            }
+            else{
+                getchar();
+                fgets(vo , 100 ,stdin);
+                vo[strlen(vo)-1]='\0';
+                if(vo[0] == '"'){
+                    int n = strlen(vo);
+                    n-=2;
+                    for(int i=0;i<n;i++)
+                        vo[i]=vo[i+1];
+                    vo[n] = '\0';
+                }
+                tcompare(vo);
+                ///////////////////
             }
         }
 
