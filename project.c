@@ -43,7 +43,7 @@ void rootdo (char direction[]){
 
 void filenamemaker(char direction[]){
     int s=0;
-    char filename[100];
+    char filename[10000];
     for(int i=0;i<strlen(direction);i++){
         if(direction[i] == '/')
             s=i+1;
@@ -69,7 +69,7 @@ void tcreatefile(char name[]){
         name[n] = '\0';
     }
     rootdo(name);
-    char direction[100] ;
+    char direction[10000] ;
     for(int i=0;i<n;i++){
         if(name[i] != '/'){
             direction[i]=name[i];
@@ -95,7 +95,7 @@ void tcreatefile(char name[]){
 }
 
 char poscheck(char name[] ,int  ncounter){
-    char poscheck[100];
+    char poscheck[10000];
     for(int i=0;i<5;i++){
         poscheck[i]=name[ncounter];
         ncounter++;
@@ -106,7 +106,7 @@ char poscheck(char name[] ,int  ncounter){
 
 void tinsert(char name[]){
     int n = strlen(name) , ncounter=0 , dcounter = 0 , mcounter = 0;
-    char direction[100];
+    char direction[10000];
     while(name[ncounter] != '-'){
         direction[dcounter]=name[ncounter];
         ncounter++;
@@ -119,7 +119,7 @@ void tinsert(char name[]){
             direction[i]=direction[i+1];
         direction[dcounter] = '\0';
     }
-    char matn[100] ,checker[100];
+    char matn[10000] ,checker[10000];
     int ccounter=0;
     while(name[ncounter+ccounter] != 32){
         checker[ccounter]=name[ncounter+ccounter];
@@ -184,21 +184,21 @@ void tinsert(char name[]){
     ja/=10;
     khat/=10;
 
-    char fana[100] , fanammatn[200];
+    char fana[10000] , fanammatn[10000];
     strcpy(fana , direction);
     filenamemaker(fana);
     FILE* file1 = fopen(direction , "r");
     FILE* file3 = fopen(fana , "w");
-    while((fgets(fanammatn , 200 , file1)) != NULL)
+    while((fgets(fanammatn , 10000 , file1)) != NULL)
         fputs(fanammatn , file3);
     fclose(file1);
     fclose(file3);
 
     file1 = fopen(direction , "r");
     FILE* file2 = fopen("root/mine/helper.txt" , "w");
-    char vorodi[100];
+    char vorodi[10000];
     for(int i=0;i<khat-1;i++){
-        fgets(vorodi , 100 , file1);
+        fgets(vorodi , 10000 , file1);
         fprintf(file2 , "%s" , vorodi);
     }
     char c;
@@ -207,7 +207,7 @@ void tinsert(char name[]){
         fprintf(file2 , "%c" , c);
     }
     int h=0;
-    for(int i=0;i<100;i++){
+    for(int i=0;i<10000;i++){
         h=0;
         if(matn[i] == '\0')
             break;
@@ -238,14 +238,14 @@ void tinsert(char name[]){
         if(h==2)
             i+=2;
     }
-    while(fgets(vorodi , 100 , file1) != NULL){
+    while(fgets(vorodi , 10000 , file1) != NULL){
         fprintf(file2 , "%s" , vorodi);
     }
     fclose(file2);
     fclose(file1);
     file1=fopen(direction , "w");
     file2=fopen("root/mine/helper.txt" , "r");
-    while(fgets(vorodi , 100 , file2) != NULL){
+    while(fgets(vorodi , 10000 , file2) != NULL){
         fprintf(file1 , "%s" , vorodi);
     }
     fclose(file2);
@@ -259,8 +259,8 @@ void tcat(char direction[]){
     }
     else{
         FILE* file1 = fopen(direction , "r");
-        char matn[200];
-        while((fgets(matn , 200 , file1)) != NULL){
+        char matn[10000];
+        while((fgets(matn , 10000 , file1)) != NULL){
             printf("%s",matn);
         }
         printf("\n");
@@ -269,16 +269,16 @@ void tcat(char direction[]){
 
 void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
     rootdo(direction);
-    char matn[100] ,matnkol[10000] ,v;
+    char matn[10000] ,matnkol[10000] ,v;
     int tchar=0 , mcounter=0;
     if(check_fileex(direction)){
 
-        char fana[100] , fanammatn[200];
+        char fana[10000] , fanammatn[10000];
         strcpy(fana , direction);
         filenamemaker(fana);
         FILE* file1 = fopen(direction , "r");
         FILE* file3 = fopen(fana , "w");
-        while((fgets(fanammatn , 200 , file1)) != NULL)
+        while((fgets(fanammatn , 10000 , file1)) != NULL)
             fputs(fanammatn , file3);
         fclose(file1);
         fclose(file3);
@@ -287,7 +287,7 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
         FILE* file2 = fopen("root/mine/helper.txt" , "w");
         if(dmode == 'f'){
             for(int i=0;i<line-1;i++){
-                fgets(matn , 100 ,file1);
+                fgets(matn , 10000 ,file1);
                 fprintf(file2, "%s" , matn);
             }
             for(int i=0;i<place-1;i++){
@@ -296,13 +296,13 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
             }
             for(int i=0;i<dsize;i++)
                 v=fgetc(file1);
-            while((fgets(matn , 100 , file1)) != NULL)
+            while((fgets(matn , 10000 , file1)) != NULL)
                 fprintf(file2 , "%s" ,matn);
             fclose(file1);
             fclose(file2);
             file1 = fopen(direction , "w");
             file2 = fopen("root/mine/helper.txt" , "r");
-            while((fgets(matn , 100 , file2)) != NULL)
+            while((fgets(matn , 10000 , file2)) != NULL)
                 fprintf(file1 , "%s" ,matn);
             fclose(file1);
             fclose(file2);
@@ -310,13 +310,13 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
         else{
             FILE* file1 = fopen(direction , "r");
             for(int i=0;i<line-1;i++){
-                fgets(matn , 100 ,file1);
+                fgets(matn , 10000 ,file1);
                 tchar+=strlen(matn);
             }
             tchar+=place;
             fclose(file1);
             file1 = fopen(direction , "r");
-            while((fgets(matn , 100 , file1)) != NULL){
+            while((fgets(matn , 10000 , file1)) != NULL){
                 strcat(matnkol , matn);
             }
             fclose(file1);
@@ -340,7 +340,7 @@ void tremovetstr(char direction[],int line,int place,int dsize,char dmode){
 
 void tcopystr(char direction[] , int line , int place , int csize , char mode){
     rootdo(direction);
-    char matn[100] , v;
+    char matn[10000] , v;
     int tchar=0;
     FILE* file2 = fopen("root/mine/clipboard.txt" , "w");
     if(!check_fileex(direction)){
@@ -350,7 +350,7 @@ void tcopystr(char direction[] , int line , int place , int csize , char mode){
         FILE* file1 = fopen(direction , "r");
         if(mode == 'f'){
             for (int i=0;i<line-2;i++){
-                fgets(matn , 100 , file1);
+                fgets(matn , 10000 , file1);
             }
             for(int i=0;i<place-1;i++){
                 fgetc(file1);
@@ -364,7 +364,7 @@ void tcopystr(char direction[] , int line , int place , int csize , char mode){
         }
         if(mode == 'b'){
             for(int i=0;i<line-1;i++){
-                fgets(matn , 100 , file1);
+                fgets(matn , 10000 , file1);
                 tchar+=strlen(matn);
             }
             tchar+=place;
@@ -385,27 +385,27 @@ void tcopystr(char direction[] , int line , int place , int csize , char mode){
 
 void tpastestr(char direction[] , int line , int place){
     rootdo(direction);
-    char cmatn[200] ,matn[100] ,v;
+    char cmatn[10000] ,matn[10000] ,v;
     if(!check_fileex(direction))
         printf("This file doesn't exist\n");
     else{
 
-        char fana[100] , fanammatn[200];
+        char fana[10000] , fanammatn[10000];
         strcpy(fana , direction);
         filenamemaker(fana);
         FILE* file1 = fopen(direction , "r");
         FILE* file3 = fopen(fana , "w");
-        while((fgets(fanammatn , 200 , file1)) != NULL)
+        while((fgets(fanammatn , 10000 , file1)) != NULL)
             fputs(fanammatn , file3);
         fclose(file1);
         fclose(file3);
 
         FILE* file2 = fopen("root/mine/clipboard.txt" , "r");
-        fgets(cmatn , 200 ,file2);
+        fgets(cmatn , 10000 ,file2);
         fclose(file2);
         file1 = fopen(direction , "r");
         file2 = fopen("root/mine/helper.txt" , "w");
-        while((fgets(matn , 100 ,file1)) != NULL){
+        while((fgets(matn , 10000 ,file1)) != NULL){
             fputs(matn , file2);
         }
         fclose(file1);
@@ -413,7 +413,7 @@ void tpastestr(char direction[] , int line , int place){
         file1 = fopen(direction , "w");
         file2 = fopen("root/mine/helper.txt" , "r");
         for(int i=0;i<line-1;i++){
-            fgets(matn , 100 , file2);
+            fgets(matn , 10000 , file2);
             fprintf(file1 , "%s" , matn);
         }
         for(int i=0;i<place;i++){
@@ -421,7 +421,7 @@ void tpastestr(char direction[] , int line , int place){
             fputc(v , file1);
         }
         fprintf(file1 , "%s" , cmatn);
-        while((fgets(matn , 100 ,file2)) != NULL){
+        while((fgets(matn , 10000 ,file2)) != NULL){
             fprintf(file1 , "%s" ,matn);
         }
         fclose(file1);
@@ -434,13 +434,13 @@ void tfind(char direction[] , char kalame[] , int modde , int atr){
         printf("This file doesn't exist\n");
         return;
     }
-    char fmatn[20000] , matn[100] , buff[100] , c;
+    char fmatn[10000] , matn[10000] , buff[10000] , c;
     basekon(fmatn);
-    int t=0 ,i=0 ,tedad=0,founded[100];
+    int t=0 ,i=0 ,tedad=0,founded[10000];
     buff[strlen(kalame)] = '\0';
     FILE* file1 = fopen(direction , "r");
 
-    while((fgets(matn , 100 , file1)) != NULL)
+    while((fgets(matn , 10000 , file1)) != NULL)
         strcat(fmatn , matn);
     fclose(file1);
 
@@ -518,7 +518,7 @@ void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int 
         return;
     }
 
-    char fana[100] , fanammatn[200];
+    char fana[10000] , fanammatn[10000];
     strcpy(fana , direction);
     filenamemaker(fana);
     FILE* file1 = fopen(direction , "r");
@@ -528,13 +528,13 @@ void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int 
     fclose(file1);
     fclose(file3);
 
-    char fmatn[20000] , matn[100] , buff[100] , c;
+    char fmatn[10000] , matn[10000] , buff[10000] , c;
     basekon(fmatn);
-    int t=0 ,i=0 ,tedad=0,founded[100] ,n;
+    int t=0 ,i=0 ,tedad=0,founded[10000] ,n;
     buff[strlen(kalame)] = '\0';
     file1 = fopen(direction , "r");
 
-    while((fgets(matn , 100 , file1)) != NULL)
+    while((fgets(matn , 10000 , file1)) != NULL)
         strcat(fmatn , matn);
     fclose(file1);
 
@@ -565,13 +565,13 @@ void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int 
         fputs(matn2 , file2);
         for(int i=0;i<strlen(kalame);i++)
             fgetc(file1);
-        while((fgets(matn , 100 , file1)) != NULL)
+        while((fgets(matn , 10000 , file1)) != NULL)
             fputs(matn , file2);
         fclose(file1);
         fclose(file2);
         file1 = fopen(direction , "w");
         file2 = fopen("root/mine/helper.txt" , "r");
-        while((fgets(matn , 100 , file2)) != NULL)
+        while((fgets(matn , 10000 , file2)) != NULL)
             fputs(matn , file1);
         fclose(file1);
         fclose(file2);
@@ -580,7 +580,7 @@ void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int 
     int nowcheck=0;
     if(modde == 2){
         basekon(fmatn);
-        while((fgets(matn , 100 , file1)) != NULL)
+        while((fgets(matn , 10000 , file1)) != NULL)
             strcat(fmatn , matn);
         for(int i=0;i<strlen(fmatn);i++){
             if(i != founded[nowcheck]){
@@ -596,7 +596,7 @@ void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int 
         fclose(file2);
         file1 = fopen(direction , "w");
         file2 = fopen("root/mine/helper.txt" , "r");
-        while((fgets(matn , 100 , file2)) != NULL)
+        while((fgets(matn , 10000 , file2)) != NULL)
             fputs(matn , file1);
         fclose(file1);
         fclose(file2);
@@ -605,10 +605,10 @@ void treplace(char direction[] , char kalame[] , char matn2[] , int modde , int 
 }
 
 void tgrep(char direction[] , char kalame[] , int modde){
-    char cdir[100];
+    char cdir[10000];
     int s=0 ,cd=0 ,chap=0 , ted=0;
-    char matn[100] , buff[100] , c;
-    int t=0 ,tedad=0,founded[100] ,n;
+    char matn[10000] , buff[10000] , c;
+    int t=0 ,tedad=0,founded[10000] ,n;
     buff[6] = '\0';
     for(int i=0 ; i<=strlen(direction) - 6 ; i++){
         for(int j=0 ; j<6 ; j++){
@@ -634,7 +634,7 @@ void tgrep(char direction[] , char kalame[] , int modde){
                 buff[strlen(kalame)] = '\0';
                 FILE* file1 = fopen(cdir , "r");
 
-                while((fgets(matn , 100 , file1)) != NULL){
+                while((fgets(matn , 10000 , file1)) != NULL){
                     for(int qww=0;qww<=strlen(matn) - strlen(kalame) ; qww++){
                         for(int j=0 ; j<strlen(kalame) ; j++){
                             buff[j] = matn[qww+j];
@@ -691,7 +691,7 @@ void tgrep(char direction[] , char kalame[] , int modde){
         buff[strlen(kalame)] = '\0';
         FILE* file1 = fopen(cdir , "r");
 
-        while((fgets(matn , 100 , file1)) != NULL){
+        while((fgets(matn , 10000 , file1)) != NULL){
             for(int qww=0;qww<=strlen(matn) - strlen(kalame) ; qww++){
                 for(int j=0 ; j<strlen(kalame) ; j++){
                     buff[j] = matn[qww+j];
@@ -740,7 +740,7 @@ void tundo(char direction[]){
         printf("This file doesn't exist!\n");
         return;
     }
-    char fana[100] , matn[200];
+    char fana[10000] , matn[10000];
     strcpy(fana , direction);
     filenamemaker(fana);
     if(check_fileex(fana) == 0){
@@ -749,19 +749,19 @@ void tundo(char direction[]){
     }
     FILE* file2 = fopen("root/mine/helper.txt" , "w");
     FILE* file1 = fopen(direction , "r");
-    while((fgets(matn , 200 ,file1)) != NULL)
+    while((fgets(matn , 10000 ,file1)) != NULL)
         fputs(matn , file2);
     fclose(file1);
     fclose(file2);
     FILE* file3 = fopen(fana , "r");
     file1 = fopen(direction , "w");
-    while((fgets(matn , 200 ,file3)) != NULL)
+    while((fgets(matn , 10000 ,file3)) != NULL)
         fputs(matn , file1);
     fclose(file1);
     fclose(file3);
     file2 = fopen("root/mine/helper.txt" , "r");
     file3 = fopen(fana , "w");
-    while((fgets(matn , 200 ,file2)) != NULL)
+    while((fgets(matn , 10000 ,file2)) != NULL)
         fputs(matn , file3);
     fclose(file2);
     fclose(file3);
@@ -774,12 +774,12 @@ tcpairs(char direction[]){
         return;
     }
 
-    char fana[100] , fanammatn[200];
+    char fana[10000] , fanammatn[10000];
     strcpy(fana , direction);
     filenamemaker(fana);
     FILE* file1 = fopen(direction , "r");
     FILE* file3 = fopen(fana , "w");
-    while((fgets(fanammatn , 200 , file1)) != NULL)
+    while((fgets(fanammatn , 10000 , file1)) != NULL)
         fputs(fanammatn , file3);
     fclose(file1);
     fclose(file3);
@@ -788,8 +788,8 @@ tcpairs(char direction[]){
     FILE* file2 = fopen("root/mine/helper.txt" , "w");
     char c , perv='a';
     int tab=0;
-    char matn[2000];
-    fgets(matn , 2000 , file1);
+    char matn[10000];
+    fgets(matn , 10000 , file1);
     int n=strlen(matn);
     for(int k=0;k<n;k++){
     c=matn[k];
@@ -847,7 +847,7 @@ tcpairs(char direction[]){
     fclose(file2);
     file1 = fopen(direction , "w");
     file2 = fopen("root/mine/helper.txt" , "r");
-    while((fgets(matn , 2000 , file2)) != NULL){
+    while((fgets(matn , 10000 , file2)) != NULL){
         fputs(matn , file1);
     }
     fclose(file1);
@@ -856,10 +856,10 @@ tcpairs(char direction[]){
 }
 
 void tcompare(char direction[]){
-    char cdir1[100] , cdir2[100];
+    char cdir1[10000] , cdir2[10000];
     int s=0 ,cd=0 ,chap=0 , ted=0;
-    char buff[100];
-    int t=0 ,k=0,founded[100] ;
+    char buff[10000];
+    int t=0 ,k=0,founded[10000] ;
     buff[6] = '\0';
     for(int i=0 ; i<=strlen(direction) - 6 ; i++){
         for(int j=0 ; j<6 ; j++){
@@ -892,14 +892,14 @@ void tcompare(char direction[]){
         printf("This file(/%s)doesn't exist!\n",cdir2);
         return;
     }
-    char matn1[2000] , matn2[2000];
+    char matn1[10000] , matn2[10000];
     int line1=0 ,line2=0 , line=0;
     FILE* file1 = fopen(cdir1 , "r");
-    while((fgets(matn1 , 2000 , file1)) != NULL)
+    while((fgets(matn1 , 10000 , file1)) != NULL)
         line1++;
     fclose(file1);
     FILE* file2 = fopen(cdir2 , "r");
-    while((fgets(matn2 , 2000 , file2)) != NULL)
+    while((fgets(matn2 , 10000 , file2)) != NULL)
         line2++;
     fclose(file2);
     int min=line2 ,minf=1, max=line1;
@@ -911,8 +911,8 @@ void tcompare(char direction[]){
     file1 = fopen(cdir1 , "r");
     file2 = fopen(cdir2 , "r");
     for(int i=0;i<min;i++){
-        fgets(matn1 , 2000 , file1);
-        fgets(matn2 , 2000 , file2);
+        fgets(matn1 , 10000 , file1);
+        fgets(matn2 , 10000 , file2);
         if(matn1[strlen(matn1)-1] == '\n')
             matn1[strlen(matn1)-1] = '\0';
         if(matn2[strlen(matn2)-1] == '\n')
@@ -921,14 +921,14 @@ void tcompare(char direction[]){
             printf("========== #%d ==========\n%s\n%s\n",i+1,matn1,matn2);
         }
     }
-    char matn[2000];
+    char matn[10000];
     printf(">>>>>>>>>> #%d - #%d file%d >>>>>>>>>>\n",min+1,max,minf);
     for(int i=0;i<max-min;i++){
         if(minf == 2){
-            fgets(matn , 2000 , file2);
+            fgets(matn , 10000 , file2);
         }
         else{
-            fgets(matn , 2000 , file1);
+            fgets(matn , 10000 , file1);
         }
         if(matn[strlen(matn)-1] == '\n')
             matn[strlen(matn)-1] = '\0';
@@ -938,7 +938,7 @@ void tcompare(char direction[]){
 
 void ttree(char* direction ,int cdepth , int depth ,int dcounter){
     int i;
-    char matn[1000];
+    char matn[10000];
     if(!strcmp(direction , "root/mine")){
         return;
     }
